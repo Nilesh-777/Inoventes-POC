@@ -3,9 +3,11 @@ package com.innoventes.test.app.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.innoventes.test.app.validator.CompanyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -40,6 +42,9 @@ public class CompanyController {
 	@Autowired
 	private MessageSource messageSource;
 
+	@Autowired
+	private CompanyValidator companyValidator;
+
 	@GetMapping("/companies")
 	public ResponseEntity<List<CompanyDTO>> getAllCompanies() {
 		List<Company> companyList = companyService.getAllCompanies();
@@ -54,9 +59,19 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).location(location).body(companyDTOList);
 	}
 
+	@GetMapping(value = "/companies/{id}")
+	public ResponseEntity<CompanyDTO> getCompany(@PathVariable(value = "id") Long id) throws ValidationException {
+		Company companyById = companyService.getCompanyById(id);
+		CompanyDTO updatedCompanyDTO = companyMapper.getCompanyDTO(companyById);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+		return ResponseEntity.status(HttpStatus.OK).location(location).body(updatedCompanyDTO);
+	}
+
 	@PostMapping("/companies")
 	public ResponseEntity<CompanyDTO> addCompany(@Valid @RequestBody CompanyDTO companyDTO)
 			throws ValidationException {
+		companyValidator.validate(companyDTO);
 		Company company = companyMapper.getCompany(companyDTO);
 		Company newCompany = companyService.addCompany(company);
 		CompanyDTO newCompanyDTO = companyMapper.getCompanyDTO(newCompany);

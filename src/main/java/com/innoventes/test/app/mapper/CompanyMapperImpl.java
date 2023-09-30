@@ -22,6 +22,7 @@ public class CompanyMapperImpl implements CompanyMapper {
 		dto.setEmail(entity.getEmail());
 		dto.setStrength(entity.getStrength());
 		dto.setWebSiteURL(entity.getWebSiteURL());
+		dto.setCretedDate(entity.getCreatedDate());
 		
 		return dto;
 	}

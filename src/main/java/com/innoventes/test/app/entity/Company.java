@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,6 +33,9 @@ public class Company extends BaseEntity {
 
 	@Column(name = "company_name")
 	private String companyName;
+
+	@Column(unique = true, name = "company_code")
+	private String companyCode;
 
 	@Column(name = "email")
 	private String email;
